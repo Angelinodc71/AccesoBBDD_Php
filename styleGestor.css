@@ -1,12 +1,93 @@
-table {
+@font-face {
+    font-family: myFirstFont;
+    src: url(sansation_light.woff);
+ }
+
+ * {
+    font-family: 'DotGothic16', sans-serif;
+ }
+header {
     border: 2px solid black;
+    text-align: center;
 }
-.tableJugador {
-    color: blue;
+
+.tablesContainer {
+    background-color: black;
+    display: flex;
+    flex-wrap: wrap;
+    color: white;
+    
 }
-.tableBatalla {
-    color: blue;
+
+table, th, td {
+    border: 2px solid white;
 }
-.tableCampeon {
-    color: blue;
+td {
+    padding: 5px;
 }
+
+.jugadores {
+    flex: 33%;
+    margin: 1,5%;
+}
+
+.campeones {
+    flex: 33%;
+    margin: 1,5%;
+}
+
+.batallas {
+    flex: 33%;
+    margin: 1,5%;
+}
+
+section {
+    display: flex;
+    flex-wrap: wrap;
+}
+section div h3 {
+    text-align: center;
+    font-weight: 1000;
+}
+form input{
+    margin-left: 20px;
+}
+
+section .crearModificarJugador {
+    flex: 20%;
+    background-color: #a4eb2d;    
+}
+
+section .crearModificarCampio {
+    flex: 20%;
+    margin: 0,5%;
+    background-color: #482f5e;
+    color: white;            
+}
+
+section .crearModificarBatalla {
+    flex: 20%;
+    margin: 0,5%;
+    background-color: #a4eb2d;        
+}
+
+section .eliminar {
+    flex: 20%;
+    margin: 0,5%;
+    background-color: #482f5e;
+    color: white;        
+}
+
+.btnAceptar {
+    cursor: pointer;
+    display: inline-block;
+    padding: 15px 32px;
+    font-size: 1em;
+}
+
+.crearModificarAceptar {
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+

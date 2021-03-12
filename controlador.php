@@ -9,73 +9,219 @@ include 'consulta.php';
 $bd = new MySQL("admin", "admin", "192.168.0.28", "campions");
 
 // Filtramos las variables pasadas por POST (si existen)
-$jugadores; $batallas; $campeones;
-$post;
 
 // Comprovamos si hemos accedido a traves de formulario para realizar acción
 
 // Obtenemos todos los datos de la BD
-$jugadorArgs = array(
-    'id'        => FILTER_SANITIZE_ENCODED,
-    'nombre'    => FILTER_SANITIZE_ENCODED,
-    'nivel'     => FILTER_SANITIZE_ENCODED,
-    'fecha'     => FILTER_SANITIZE_ENCODED,
-);
 
-$campioArgs = array(
-    'id'        => FILTER_SANITIZE_ENCODED,
-    'nombre'    => FILTER_SANITIZE_ENCODED,
-    'tipo'      => FILTER_SANITIZE_ENCODED,
-    'precio'    => FILTER_SANITIZE_ENCODED,
-    'fecha'     => FILTER_SANITIZE_ENCODED,
-);
+$post = array (   "jugador" => array (  'id'        => FILTER_SANITIZE_ENCODED,
+                                        'nombre'    => FILTER_SANITIZE_ENCODED,
+                                        'nivel'     => FILTER_SANITIZE_ENCODED,
+                                        'fecha'     => FILTER_SANITIZE_ENCODED,
+                                     ),
+                  "campeon" => array (  'id'        => FILTER_SANITIZE_ENCODED,
+                                        'nombre'    => FILTER_SANITIZE_ENCODED,
+                                        'tipo'      => FILTER_SANITIZE_ENCODED,
+                                        'precio'    => FILTER_SANITIZE_ENCODED,
+                                        'fecha'     => FILTER_SANITIZE_ENCODED,
+                                     ),
+                  "batalla" => array (  'idJ'       => FILTER_SANITIZE_ENCODED,
+                                        'idC'       => FILTER_SANITIZE_ENCODED,
+                                        'cantidad'  => FILTER_SANITIZE_ENCODED,
+                                     )
+                );
+global $post;
 
-$batallaArgs = array(
-    'idJ'        => FILTER_SANITIZE_ENCODED,
-    'idC'        => FILTER_SANITIZE_ENCODED,
-    'cantidad'   => FILTER_SANITIZE_ENCODED,
-);
-
-// query= select * from jugador, entonces le paso query y bd
-$consulta = new Consulta("SELECT * FROM jugador", $bd);
-
-// Esto lo puedo hacer aqui o lo puedo hacer en campions.php
-echo "<table class='tableJugador'>";
-echo '<tr><td>Id</td><td>Nom</td><td>Nivell</td><td>Data</td></tr>';
-for ($i = 0; $i < $consulta->numFilasObtenidas; $i++) {
-    echo "<tr><td>".$consulta->tablaResultados[$i]->id."</td>";
-    echo "<td>".$consulta->tablaResultados[$i]->nombre."</td>";
-    echo "<td>".$consulta->tablaResultados[$i]->nivel."</td>";
-    echo "<td>".$consulta->tablaResultados[$i]->fecha."</td></tr>";
+if(!empty($_POST)){
+    accion($post, $bd);
 }
-echo "</table>";
 
-$consulta = new Consulta("SELECT * FROM batalla", $bd);
-
-echo "<table class='tableBatalla'>";
-echo '<tr><td>Id Jugador</td><td>Id Campeón</td><td>Cantidad</td></tr>';
-for ($i = 0; $i < $consulta->numFilasObtenidas; $i++) {
-    echo "<tr><td>".$consulta->tablaResultados[$i]->idJugador."</td>";
-    echo "<td>".$consulta->tablaResultados[$i]->idCampeon."</td>";
-    echo "<td>".$consulta->tablaResultados[$i]->cantidad."</td></tr>";
+// 
+function accion ($post, $bd){
+    switch ($_POST["form"]) {
+        case "jugador":
+            switch ($_POST["accion"]) {
+                case "crear":
+                    $post = filter_input_array(INPUT_POST, $post["jugador"]);
+                    insertJugador($post,$bd);
+                    break;
+                case "modificar":
+                    $post = filter_input_array(INPUT_POST, $post["jugador"]);
+                    updateJugador($post,$bd);
+                    break;
+                case "eliminar":
+                    $post = filter_input_array(INPUT_POST, $post["jugador"]);
+                    deleteJugador($post,$bd);
+                    break;
+            }
+            break;
+        case "campio":
+            switch ($_POST["accion"]) {
+                case "crear":
+                    $post = filter_input_array(INPUT_POST, $post["campeon"]);
+                    insertCampeon($post,$bd);
+                    break;
+                case "modificar":
+                    $post = filter_input_array(INPUT_POST, $post["campeon"]);
+                    updateCampeon($post,$bd);
+                    break;
+                case "eliminar":
+                    $post = filter_input_array(INPUT_POST, $post["campeon"]);
+                    deleteCampeon($post,$bd);
+                    break;
+            }
+            break;
+        case "batalla":
+            switch ($_POST["accion"]) {
+                case "crear":
+                    $post = filter_input_array(INPUT_POST, $post["batalla"]);
+                    insertBatalla($post,$bd);
+                    break;
+                case "modificar":
+                    $post = filter_input_array(INPUT_POST, $post["batalla"]);
+                    updateBatalla($post,$bd);
+                    break;
+                case "eliminar":
+                    $post = filter_input_array(INPUT_POST, $post["batalla"]);
+                    deleteCampeon($post,$bd);
+                    break;
+            }
+            break;  
+    }  
 }
-echo "</table>";
 
+// GET ALL: Obtener todos los registros de una tabla
+function getAllJugadores( $bd ) {
+    /* query= select * from jugador, entonces le paso query y bd*/
+    $consulta = new Consulta("SELECT * FROM jugador", $bd);
 
-$consulta = new Consulta("SELECT * FROM campeon", $bd);
-
-echo "<table class='tableCampeon'>";
-echo '<tr><td>Id</td><td>Nom</td><td>Tipus</td><td>Preu</td><td>Data</td></tr>';
-for ($i = 0; $i < $consulta->numFilasObtenidas; $i++) {
-    echo "<tr><td>".$consulta->tablaResultados[$i]->id."</td>";
-    echo "<td>".$consulta->tablaResultados[$i]->nombre."</td>";
-    echo "<td>".$consulta->tablaResultados[$i]->tipo."</td>";
-    echo "<td>".$consulta->tablaResultados[$i]->precio."</td>";
-    echo "<td>".$consulta->tablaResultados[$i]->fecha."</td></tr>";
+    /* Esto lo puedo hacer aqui o lo puedo hacer en campions.php */
+    echo "<table class='tableJugador'>";
+    echo '<tr><th>Id</th><th>Nom</th><th>Nivell</th><th>Data</th></tr>';
+    for ($i = 0; $i < $consulta->numFilasObtenidas; $i++) {
+        echo "<tr>";
+        echo "<td>".$consulta->tablaResultados[$i]->id."</td>";
+        echo "<td>".$consulta->tablaResultados[$i]->nombre."</td>";
+        echo "<td>".$consulta->tablaResultados[$i]->nivel."</td>";
+        echo "<td>".$consulta->tablaResultados[$i]->fecha."</td>";
+        echo "</tr>";
+    }
+    echo "</table>";
 }
-echo "</table>";
 
+function getAllCampeones( $bd ) {
+    $consulta = new Consulta("SELECT * FROM batalla", $bd);
 
+    echo "<table class='tableBatalla'>";
+    echo '<tr><th>IdJugador</th><th>IdCampeón</th><th>Cantidad</th></tr>';
+    for ($i = 0; $i < $consulta->numFilasObtenidas; $i++) {
+        echo "<tr>";
+        echo "<td>".$consulta->tablaResultados[$i]->idJugador."</td>";
+        echo "<td>".$consulta->tablaResultados[$i]->idCampeon."</td>";
+        echo "<td>".$consulta->tablaResultados[$i]->cantidad."</td>";
+        echo "</tr>";
+    }
+    echo "</table>";
+}
+
+function getAllBatallas ( $bd ) {
+    $consulta = new Consulta("SELECT * FROM campeon", $bd);
+
+    echo "<table class='tableCampeon'>";
+    echo '<tr><th>Id</th><th>Nom</th><th>Tipus</th><th>Preu</th><th>Data</th></tr>';
+    for ($i = 0; $i < $consulta->numFilasObtenidas; $i++) {
+        echo "<tr>";
+        echo "<td>".$consulta->tablaResultados[$i]->id."</td>";
+        echo "<td>".$consulta->tablaResultados[$i]->nombre."</td>";
+        echo "<td>".$consulta->tablaResultados[$i]->tipo."</td>";
+        echo "<td>".$consulta->tablaResultados[$i]->precio."</td>";
+        echo "<td>".$consulta->tablaResultados[$i]->fecha."</td>";
+        echo "</tr>";
+    }
+    echo "</table>";
+}
+
+// INSERT: Insertar un nuevo registro en una tabla
+function insertJugador ( $j,  $bd ) {
+    $id=$j['id'];
+    $nombre=$j['nombre'];
+    $nivel=(int)$j['nivel'];
+    $fecha=$j['fecha'];
+
+    $consulta = "INSERT INTO jugador (id, nombre, nivel, fecha) VALUES ('$id', '$nombre', '$nivel', '$fecha')";
+    new Consulta($consulta, $bd);
+}
+
+function insertCampeon ( $c,  $bd ) {
+    $id=$c['id'];
+    $nombre=$c['nombre'];
+    $tipo=$c['tipo'];
+    $precio=(int)$c['precio'];
+    $fecha=$c['fecha'];
+
+    $consulta = "INSERT INTO campeon (id, nombre, tipo, precio, fecha) VALUES ('$id', '$nombre', '$tipo', '$precio', '$fecha')";
+    new Consulta($consulta, $bd);
+}
+
+function insertBatalla ( $b,  $bd ) {
+    $idJugador=$b['idJ'];
+    $idCampeon=$b['idC'];
+    $cantidad=(int)$b['cantidad'];
+
+    $consulta = "INSERT INTO batalla (idJugador, idCampeon, cantidad) VALUES ('$idJugador', '$idCampeon', '$cantidad')";
+    new Consulta($consulta, $bd);
+}
+
+// UPDATE: Actualizar/Modificar los datos guardados de un registro
+function updateJugador ( $j,  $bd ) {
+    $id=$j['id'];
+    $nombre=$j['nombre'];
+    $nivel=(int)$j['nivel'];
+    $fecha=$j['fecha'];
+
+    $consulta = "UPDATE jugador SET nombre='$nombre', nivel='$nivel', fecha='$fecha' WHERE id=$id";
+    new Consulta($consulta, $bd);
+}
+
+function updateCampeon ( $c,  $bd ) {
+    $id=$c['id'];
+    $nombre=$c['nombre'];
+    $tipo=$c['tipo'];
+    $precio=(int)$c['precio'];
+    $fecha=$c['fecha'];
+
+    $consulta = "UPDATE campeon SET nombre='$nombre', tipo='$tipo', precio='$precio', fecha='$fecha' WHERE id=$id";
+    new Consulta($consulta, $bd);
+}
+
+function updateBatalla ( $b,  $bd ) {
+    $idJ=$b['idJ'];
+    $idC=$b['idC'];
+    $cantidad=(int)$b['cantidad'];
+    
+    $consulta = "UPDATE batalla SET cantidad='$cantidad' WHERE idJugador='$idJ' AND idCampeon='$idC'";
+    new Consulta($consulta, $bd);
+}
+
+// DELETE: Eliminar un registro de una tabla
+function deleteJugador ( $j,  $bd ) {
+    $id=$j['id'];
+    $consulta = "DELETE FROM jugador WHERE id=$id";
+    new Consulta ($consulta,$bd);
+}
+
+function deleteCampeon ( $c,  $bd ) {
+    $id=$c['id'];
+    $consulta = "DELETE FROM jugador WHERE id=$id";
+    new Consulta ($consulta,$bd);
+}
+
+function deleteBatalla ( $b,  $bd ) {
+    $idJ=$b['idJ'];
+    $idC=$b['idC'];
+    $consulta = "DELETE FROM batalla WHERE idJugador='$idJ' AND idCampeon='$idC'";
+    new Consulta($consulta, $bd);
+}
 
 //No se porque esta vaina no me funciona
 //$bd->x;
@@ -83,34 +229,5 @@ echo "</table>";
 
 // Cerramos sesion con la BD utilizando una función de la clase MySQL
 
-
-/*if(!empty($_POST)){
-    accion($post, $bd);
-}
-
-// 
-function accion ($post, $bd){
-    global $jugadorArgs; global $batallaArgs; global $campioArgs;
-
-    switch ($_POST["form"]) {
-        case "jugador":
-            $post = filter_input_array(INPUT_POST, $jugadorArgs);
-            if($_POST["accion"] == 'crear') insertJugador($post, $bd);
-            break;
-    }
-}
-
-function insertJugador($j, $bd){
-    $id=$j['id'];
-    $nombre=$j['nombre'];
-    $nivel=(int)$j['nivel'];
-    $fecha=$j['fecha'];
-
-    $consulta = "INSERT INTO jugador (id, nombre, nivel, fecha) VALUES ('$id', '$nombre', '$nivel', '$fecha')";
-    $j = new Consulta($consulta, $bd);
-    $bd->x;
-}*/
-
-//$post = filter_input_array(INPUT_POST, $jugadorArgs);
 
 ?>
