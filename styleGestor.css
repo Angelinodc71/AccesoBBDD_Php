@@ -15,8 +15,8 @@ header {
     background-color: black;
     display: flex;
     flex-wrap: wrap;
-    color: white;
-    
+    color: rgb(37, 242, 30);
+    padding: 2%;
 }
 
 table, th, td {
