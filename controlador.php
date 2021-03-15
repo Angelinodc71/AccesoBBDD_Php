@@ -148,8 +148,10 @@ function insertJugador ( $j,  $bd ) {
     $nivel=(int)$j['nivel'];
     $fecha=$j['fecha'];
 
-    $consulta = "INSERT INTO jugador (id, nombre, nivel, fecha) VALUES ('$id', '$nombre', '$nivel', '$fecha')";
-    new Consulta($consulta, $bd);
+    if (!empty($id)){
+        $consulta = "INSERT INTO jugador (id, nombre, nivel, fecha) VALUES ('$id', '$nombre', '$nivel', '$fecha')";
+        new Consulta($consulta, $bd);
+    }
 }
 
 function insertCampeon ( $c,  $bd ) {
@@ -159,8 +161,11 @@ function insertCampeon ( $c,  $bd ) {
     $precio=(int)$c['precio'];
     $fecha=$c['fecha'];
 
-    $consulta = "INSERT INTO campeon (id, nombre, tipo, precio, fecha) VALUES ('$id', '$nombre', '$tipo', '$precio', '$fecha')";
-    new Consulta($consulta, $bd);
+    if (!empty($id)) {
+        $consulta = "INSERT INTO campeon (id, nombre, tipo, precio, fecha) VALUES ('$id', '$nombre', '$tipo', '$precio', '$fecha')";
+        new Consulta($consulta, $bd);
+    }
+    
 }
 
 function insertBatalla ( $b,  $bd ) {
@@ -168,8 +173,10 @@ function insertBatalla ( $b,  $bd ) {
     $idCampeon=$b['idC'];
     $cantidad=(int)$b['cantidad'];
 
-    $consulta = "INSERT INTO batalla (idJugador, idCampeon, cantidad) VALUES ('$idJugador', '$idCampeon', '$cantidad')";
-    new Consulta($consulta, $bd);
+    if (!empty($id)) {
+        $consulta = "INSERT INTO batalla (idJugador, idCampeon, cantidad) VALUES ('$idJugador', '$idCampeon', '$cantidad')";
+        new Consulta($consulta, $bd);
+    }
 }
 
 // UPDATE: Actualizar/Modificar los datos guardados de un registro
@@ -179,8 +186,10 @@ function updateJugador ( $j,  $bd ) {
     $nivel=(int)$j['nivel'];
     $fecha=$j['fecha'];
 
-    $consulta = "UPDATE jugador SET nombre='$nombre', nivel='$nivel', fecha='$fecha' WHERE id=$id";
-    new Consulta($consulta, $bd);
+    if (!empty($id)) {
+        $consulta = "UPDATE jugador SET nombre='$nombre', nivel='$nivel', fecha='$fecha' WHERE id=$id";
+        new Consulta($consulta, $bd);
+    }
 }
 
 function updateCampeon ( $c,  $bd ) {
@@ -190,8 +199,10 @@ function updateCampeon ( $c,  $bd ) {
     $precio=(int)$c['precio'];
     $fecha=$c['fecha'];
 
-    $consulta = "UPDATE campeon SET nombre='$nombre', tipo='$tipo', precio='$precio', fecha='$fecha' WHERE id=$id";
-    new Consulta($consulta, $bd);
+    if (!empty($id)) {
+        $consulta = "UPDATE campeon SET nombre='$nombre', tipo='$tipo', precio='$precio', fecha='$fecha' WHERE id=$id";
+        new Consulta($consulta, $bd);
+    }
 }
 
 function updateBatalla ( $b,  $bd ) {
@@ -199,35 +210,44 @@ function updateBatalla ( $b,  $bd ) {
     $idC=$b['idC'];
     $cantidad=(int)$b['cantidad'];
     
-    $consulta = "UPDATE batalla SET cantidad='$cantidad' WHERE idJugador='$idJ' AND idCampeon='$idC'";
-    new Consulta($consulta, $bd);
+    if (!empty($id)) {
+        $consulta = "UPDATE batalla SET cantidad='$cantidad' WHERE idJugador='$idJ' AND idCampeon='$idC'";
+        new Consulta($consulta, $bd);
+    }
 }
 
 // DELETE: Eliminar un registro de una tabla
 function deleteJugador ( $j,  $bd ) {
     $id=$j['id'];
-    $consulta = "DELETE FROM jugador WHERE id=$id";
-    new Consulta ($consulta,$bd);
+    if (!empty($id)) {
+        $consulta = "DELETE FROM jugador WHERE id=$id";
+        new Consulta ($consulta,$bd);
+    }
 }
 
 function deleteCampeon ( $c,  $bd ) {
     $id=$c['id'];
-    $consulta = "DELETE FROM jugador WHERE id=$id";
-    new Consulta ($consulta,$bd);
+    if (!empty($id)) {
+        $consulta = "DELETE FROM jugador WHERE id=$id";
+        new Consulta ($consulta,$bd);
+    }
 }
 
 function deleteBatalla ( $b,  $bd ) {
     $idJ=$b['idJ'];
     $idC=$b['idC'];
-    $consulta = "DELETE FROM batalla WHERE idJugador='$idJ' AND idCampeon='$idC'";
-    new Consulta($consulta, $bd);
+    if (!empty($idJ) || !empty($idC)) {
+        $consulta = "DELETE FROM batalla WHERE idJugador='$idJ' AND idCampeon='$idC'";
+        new Consulta($consulta, $bd);
+    }
 }
 
-//No se porque esta vaina no me funciona
+//No se porque esta vaina no me funciona (pero se que es para cerrar la conexión)
 //$bd->x;
 
 
 // Cerramos sesion con la BD utilizando una función de la clase MySQL
+//$bd->x;
 
 
 ?>

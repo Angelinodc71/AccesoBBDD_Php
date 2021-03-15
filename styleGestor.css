@@ -30,6 +30,9 @@ td {
     flex: 33%;
     margin: 1,5%;
 }
+.tableJugadores {
+    margin: 1%;
+}
 
 .campeones {
     flex: 33%;
